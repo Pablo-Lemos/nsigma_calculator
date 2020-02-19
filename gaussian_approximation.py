@@ -1,7 +1,6 @@
 '''
-This code calculates the tension as Probability To Exceed (PTE) and number 
-of sigma, for a given point and a Gaussian likelihood with given mean and
-covariance matrix. 
+This code calculates the tension as Probability To Exceed (PTE), for a given 
+point and a Gaussian likelihood with given mean and covariance matrix. 
 
 Written by Pablo Lemos(UCL)
 pablo.lemos.18@ucl.ac.uk
@@ -10,6 +9,7 @@ Feb 2019
 
 import numpy as np
 from scipy.stats import norm, multivariate_normal
+from stats import get_pte_from_samples
 
 def generate_samples(mean, cov, nsamples):
     '''Generate samples from a Gaussian distribution, and calculate their 
@@ -48,8 +48,8 @@ def generate_samples(mean, cov, nsamples):
 
     return X, loglike
 
-def get_pte_from_samples(x, mean, cov, nsamples):
-    '''Calculate the point for a given point and Gaussian distribution
+def get_pte_from_gaussian(x, mean, cov, nsamples):
+    '''Calculate the PTE for a given point and Gaussian distribution
 
     Parameters
     ----------
@@ -69,20 +69,14 @@ def get_pte_from_samples(x, mean, cov, nsamples):
     '''
     
     #Generate samples for Gaussian distribution
-    y, loglike = generate_samples(mean, cov, nsamples)
+    y, loglike_samples = generate_samples(mean, cov, nsamples)
 
     # The log-likelihood for x
     loglike_x = multivariate_normal.logpdf(x, mean=mean, cov=cov)
 
-    # Count how many samples have a higher likelihood than x
-    total = 0
-    for i in range(nsamples):
-        if loglike[i] > loglike_x:
-            total += 1
-
     # Get PTE
-    pte=1-total/float(nsamples)
-
+    pte = get_pte_from_samples(x, loglike_x, loglike_samples)
+    
     return pte
     
 
