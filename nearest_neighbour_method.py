@@ -141,11 +141,9 @@ def get_pte_nearest_neighbour(x, path_to_chains):
 
     # Find nearest neighbour
     nearest_neighbour, index = find_nearest_neighbour(x, samples)
-    print(nearest_neighbour)
 
     # The log-likelihood for x
     loglike_x = loglike[index]
-    print(loglike_x)
 
     # Get PTE
     pte = get_pte_from_samples(samples, loglike_x, loglike, weights)

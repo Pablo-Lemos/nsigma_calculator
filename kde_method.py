@@ -125,19 +125,15 @@ def get_pte_KDE(x, path_to_chains, kernel='gaussian', bandwidth=0.2, rtol = 1e-8
 
     # Load chain
     weights, loglike_samples, X = load_chains(path_to_chains)
-    print('nsamples = ', len(loglike_samples))
 
     # Perform KDE fitting
     kde = fit_kde(X, weights, kernel=kernel, bandwidth=bandwidth, rtol = rtol)
-    print('Fitted')
 
     # Get KDE log-likelihood
     loglike_kde = get_kde_loglike(X, kde)
-    print('Got loglike')
 
     # The log-likelihood for x
     loglike_x = get_kde_loglike([x], kde)
-    print('Got loglike_x ', loglike_x )
 
     # Get PTE
     pte = get_pte_from_samples(x, loglike_x, loglike_kde, weights = weights)
