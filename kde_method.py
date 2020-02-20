@@ -47,7 +47,7 @@ def load_chains(path_to_chains):
 
     return weights, loglike, X
 
-def fit_kde(X, weights = 1, kernel='gaussian', bandwidth=0.2):
+def fit_kde(X, weights = 1, kernel='gaussian', bandwidth=0.2, rtol = 1e-8):
     '''Fit the samples using KDE
 
     Parameters
@@ -60,6 +60,8 @@ def fit_kde(X, weights = 1, kernel='gaussian', bandwidth=0.2):
         The KDE kernel to be used, defaults to 'gaussian'
     bandwidth: float
         The KDE bandwidth to be used, defaults to 0.1
+    rtol: float
+        Relative tolerance of the KDE fitting. Defaults to 1e-8
 
     Returns
     ----------
@@ -70,10 +72,10 @@ def fit_kde(X, weights = 1, kernel='gaussian', bandwidth=0.2):
     # Do we have weights
     if type(weights) is int:
         # Fit the data (no weights)
-        kde = KernelDensity(kernel=kernel, bandwidth=bandwidth).fit(X)    
+        kde = KernelDensity(kernel=kernel, bandwidth=bandwidth, rtol = rtol).fit(X)    
     else:
         # Fit the data (no weights)
-        kde = KernelDensity(kernel=kernel, bandwidth=bandwidth).fit(X,
+        kde = KernelDensity(kernel=kernel, bandwidth=bandwidth, rtol = rtol).fit(X,
         sample_weight = weights)    
 
     return kde
@@ -99,7 +101,7 @@ def get_kde_loglike(X, kde):
     
     return loglike
 
-def get_pte_KDE(x, path_to_chains, kernel='gaussian', bandwidth=0.2):
+def get_pte_KDE(x, path_to_chains, kernel='gaussian', bandwidth=0.2, rtol = 1e-8):
     '''Calculate the point for a given point and a chain, using KDE
 
     Parameters
@@ -112,6 +114,8 @@ def get_pte_KDE(x, path_to_chains, kernel='gaussian', bandwidth=0.2):
         The KDE kernel to be used, defaults to 'gaussian'
     bandwidth: float
         The KDE bandwidth to be used, defaults to 0.2
+    rtol: float
+        Relative tolerance of the KDE fitting. Defaults to 1e-8
 
     Returns
     -------
@@ -124,7 +128,7 @@ def get_pte_KDE(x, path_to_chains, kernel='gaussian', bandwidth=0.2):
     print('nsamples = ', len(loglike_samples))
 
     # Perform KDE fitting
-    kde = fit_kde(X, weights, kernel=kernel, bandwidth=bandwidth)
+    kde = fit_kde(X, weights, kernel=kernel, bandwidth=bandwidth, rtol = rtol)
     print('Fitted')
 
     # Get KDE log-likelihood
