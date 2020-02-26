@@ -9,8 +9,8 @@ Feb 2019
 '''
 
 import numpy as np
-from sklearn.neighbors import KernelDensity
 from stats import get_pte_from_samples
+from scipy.stats import gaussian_kde
 
 def load_chains(path_to_chains):
     '''Load MCMC or Nested sampling chains
@@ -72,11 +72,10 @@ def fit_kde(X, weights = 1, kernel='gaussian', bandwidth=0.2, rtol = 1e-8):
     # Do we have weights
     if type(weights) is int:
         # Fit the data (no weights)
-        kde = KernelDensity(kernel=kernel, bandwidth=bandwidth, rtol = rtol).fit(X)    
+        kde = gaussian_kde(X.T, bw_method='silverman')
     else:
         # Fit the data (no weights)
-        kde = KernelDensity(kernel=kernel, bandwidth=bandwidth, rtol = rtol).fit(X,
-        sample_weight = weights)    
+        kde = gaussian_kde(X.T, bw_method='silverman', weights = weights)
 
     return kde
 
@@ -97,7 +96,7 @@ def get_kde_loglike(X, kde):
     '''
 
     # Get the log likelihood
-    loglike = kde.score_samples(X)
+    loglike = kde.logpdf(X.T)
     
     return loglike
 
