@@ -75,7 +75,7 @@ def fit_kde(X, weights = 1, kernel='gaussian', bandwidth=0.2, rtol = 1e-8):
         kde = gaussian_kde(X.T, bw_method='silverman')
     else:
         # Fit the data (no weights)
-        kde = gaussian_kde(X.T, bw_method='silverman', weights = weights)
+        kde = gaussian_kde(X.T, bw_method='silverman', weights = weights.T)
 
     return kde
 
@@ -100,7 +100,7 @@ def get_kde_loglike(X, kde):
     
     return loglike
 
-def get_pte_KDE(x, path_to_chains, kernel='gaussian', bandwidth=0.2, rtol = 1e-8):
+def get_pte_KDE(x, path_to_chains):
     '''Calculate the point for a given point and a chain, using KDE
 
     Parameters
@@ -126,7 +126,7 @@ def get_pte_KDE(x, path_to_chains, kernel='gaussian', bandwidth=0.2, rtol = 1e-8
     weights, loglike_samples, X = load_chains(path_to_chains)
 
     # Perform KDE fitting
-    kde = fit_kde(X, weights, kernel=kernel, bandwidth=bandwidth, rtol = rtol)
+    kde = fit_kde(X, weights)
 
     # Get KDE log-likelihood
     loglike_kde = get_kde_loglike(X, kde)
